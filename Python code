@@ -1,0 +1,86 @@
+import random
+
+# Greeting & rules of the game.
+print("Let's play a game of Cows & Bulls!\n"
+      " ^__^\n"
+      " (oo)\\________\n"
+      " (__)\\        )\/\n"
+      "      ||----w||\n"
+      "      ||     ||\n")
+print("Here are the rules:\n"
+      "You have to guess our secret, 4-digit number.\n"
+      "If one of your digits is the same number AND in the same place as the secret code, you get a COW.\n"
+      "If one of your digits is the same number but in the WRONG place, you get a BULL.\n"
+      "There are two difficulty levels. In EASY MODE, you can guess as many times as you want. In HARD\n"
+      "MODE, you only get 10 guesses.\n"
+      "Keep in mind, some numbers might be repeated. Numbers like 2020, 9337, or even 9999 are possible!\n"
+      "Ready, set, go!\n")
+
+# Create secret 4-digit number and make it a list of integers so we can compare indices later with player guess.
+secret = []
+for n in range(0, 4):
+    secret.append(random.randint(0,9))
+print(secret) """TURN OFF BEFORE PLAYING ... this part is only for testing."""
+
+# Ask the player in which mode they want to play.
+while True:
+    mode = input("Would you like EASY or HARD: ")
+    if mode.lower() != "easy" and mode.lower() != "hard":
+        continue
+    else:
+        break
+
+# This variable will keep track of how many times the player guessed until correct.
+tries = 0
+
+# Start the game by asking user for a number and create a list of integers to compare to the secret number.
+while True:
+    guess_orig = input("Please enter a 4-digit number: ")
+    guess = []
+    for i in guess_orig:
+        i = int(i)
+        guess.append(i)
+
+# Process the player's guess to see how it compares to the secret number.
+    cows = 0
+    bulls = 0
+    for g in range(0,4):
+        if guess[g] == secret[g]:
+            cows += 1
+        elif guess[g] != secret[g]:
+            if guess[g] in secret:
+                bulls += 1
+    """This is how I solved the problem of duplicate numbers creating wrong counts for bulls. I compare the numbers that are
+    present in the secret number to how many times they are present in the player's guess. Then I subtract bulls
+    accordingly. For example, if the secret number is 2020 and the player guesses 2222, the above code would result in
+    2 cows and 2 bulls. But the code below would result in 2 cows and 0 bulls. Since guess.count(2) is 4 and 
+    secret.count(2) is only 2, we follow the first elif statement and end up subtracting 2 bulls from the result of the
+    code above."""
+    for h in range(0,10):
+        if h in secret:
+            if guess.count(h) == (secret.count(h) + 1):
+                bulls -= 1
+            elif guess.count(h) == (secret.count(h) + 2):
+                bulls -= 2
+            elif guess.count(h) == (secret.count(h) + 3):
+                bulls -= 3
+    tries += 1
+    # Different responses according to which mode the player chose.
+    if mode.lower() == "easy":
+        if cows != 4:
+            print(f"You have {cows} cows and {bulls} bulls.\n") # Then loops back to the beginning of while statement.
+        if cows == 4:
+            print("You did it! The secret code is %s. It took you %s tries to find our secret code." % (
+            "".join(map(str, secret)), tries))
+            break # You won! Loop stops.
+    if mode.lower() == "hard":
+        if cows != 4:
+            print(f"You have {cows} cows and {bulls} bulls.\n")
+            print(f"You have {10 - tries} tries left.") # Then loops back to beginning.
+        if tries == 10:
+            print("Sorry, you ran out of tries. Better luck next time.")
+            break # Couldn't guess them number within the amount of tries. Game over. Loop stops.
+        elif cows == 4:
+            print("You did it! The secret code is %s. It took you %s tries to find our secret code." % (
+            "".join(map(str, secret)), tries))
+            break # You win! Loop stops.
