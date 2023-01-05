@@ -1,5 +1,7 @@
 import random
 
+"""TESTING"""
+
 # Greeting & rules of the game.
 print("Let's play a game of Cows & Bulls!\n"
       " ^__^\n"
